@@ -12,6 +12,12 @@ namespace Users.Models
 
         [Required]
         public String Password { get; set; }
+
+        [Required]
+        public String PhoneNumber { get; set; }
+
+        [Required]
+        public String Location { get; set; }
    
     }
 }

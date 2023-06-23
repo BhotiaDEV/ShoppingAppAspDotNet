@@ -58,3 +58,9 @@ C:\Users\BhotiaDEV\OneDrive\Desktop\April\Angular\dotnet\Users\Users\obj\Debug\n
 C:\Users\BhotiaDEV\OneDrive\Desktop\April\Angular\dotnet\Users\Users\bin\Debug\net7.0\Users.staticwebassets.runtime.json
 C:\Users\BhotiaDEV\OneDrive\Desktop\April\Angular\dotnet\Users\Users\bin\Debug\net7.0\Microsoft.AspNetCore.Identity.UI.dll
 C:\Users\BhotiaDEV\OneDrive\Desktop\April\Angular\dotnet\Users\Users\bin\Debug\net7.0\Microsoft.Extensions.FileProviders.Embedded.dll
+C:\Users\BhotiaDEV\OneDrive\Desktop\April\Angular\dotnet\Users\Users\bin\Debug\net7.0\System.Web.Cors.dll
+C:\Users\BhotiaDEV\OneDrive\Desktop\April\Angular\dotnet\Users\Users\bin\Debug\net7.0\System.Net.Http.Formatting.dll
+C:\Users\BhotiaDEV\OneDrive\Desktop\April\Angular\dotnet\Users\Users\bin\Debug\net7.0\System.Web.Http.dll
+C:\Users\BhotiaDEV\OneDrive\Desktop\April\Angular\dotnet\Users\Users\bin\Debug\net7.0\System.Web.Http.Cors.dll
+C:\Users\BhotiaDEV\OneDrive\Desktop\April\Angular\dotnet\Users\Users\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Users\BhotiaDEV\OneDrive\Desktop\April\Angular\dotnet\Users\Users\bin\Debug\net7.0\Newtonsoft.Json.Bson.dll

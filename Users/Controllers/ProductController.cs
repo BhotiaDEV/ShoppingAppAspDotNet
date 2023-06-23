@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using Users.Data;
 using Users.Models;
 
@@ -18,25 +19,42 @@ namespace Users.Controllers
 
         [Route("getproducts")]
         [HttpGet]
-        public IActionResult GetProduct()
+        public IActionResult GetProducts([FromQuery] int limit = 50, [FromQuery] int skip = 0 )
         {
-
-            if (User.Identity.IsAuthenticated)
-            {
-                return Ok(context.Products.ToList());
-            }
-            else
-            {
-                return BadRequest("User is unauthorized");
-            }
+                var products = context.Products.ToList().Skip(skip).Take(limit);
+                var response = new { products = products };
+                return Ok(response);   
         }
 
+        [Route("getproduct/{id:guid}")]
+        [HttpGet]
+        public IActionResult GetProduct(Guid id)
+        {
+            //if(User.Identity.IsAuthenticated)
+            //{
+                var product = context.Products.FirstOrDefault(p => p.Id == id);
+                if(product == null) 
+                {
+                    return NotFound();
+                }
+                return Ok(product);
+            //}
+            //return BadRequest("User is not Authenticated!");
+        }
+
+       // [Authorize(Roles ="Admin")]
         [Route("addproduct")]
         [HttpPost]
         public IActionResult AddProducts(AddProduct request)
         {
             if (ModelState.IsValid)
             {
+                var existing_product = context.Products.FirstOrDefault(p => p.title == request.title);
+
+                if(existing_product != null)
+                {
+                    return BadRequest("Product already exists");
+                }
                 var Product = new Product()
                 {
                     Id = Guid.NewGuid(),
@@ -60,9 +78,10 @@ namespace Users.Controllers
             else { return BadRequest("Bad Request"); }
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("updateproduct/{id:guid}")]
         [HttpPut]
-        public IActionResult UpdateProductdetails([FromRoute] Guid id , UpdateProduct request)
+        public IActionResult UpdateProductdetails([FromRoute] Guid id, UpdateProduct request)
         {
             var existing_product = context.Products.FirstOrDefault(p => p.Id == id);
 
@@ -89,6 +108,53 @@ namespace Users.Controllers
             context.Products.Remove(product);
             context.SaveChanges();
             return Ok("Product Deleted.");
+        }
+
+        [Route("search")]
+        [HttpGet]
+        public IActionResult Search([FromQuery] string q , [FromQuery] int limit = 5)
+        {
+            var results = context.Products.Where(p => p.title.Contains(q) || p.category.Contains(q)).ToList().Take(limit);
+            var response = new { products = results };
+            return Ok(response);
+        }
+
+        [Route("category")]
+        [HttpPost]
+        public IActionResult category(AddCategory request)
+        {
+           if(ModelState.IsValid)
+            {
+                var Category = new Category()
+                {
+                    Id = Guid.NewGuid(),
+                    category = request.category,
+                };
+                context.Categories.Add(Category);
+                context.SaveChanges();
+                return Ok(Category);
+            }
+            return BadRequest("Bad request");
+        }
+
+        [Route("categories")]
+        [HttpGet]
+        public IActionResult getCategories()
+        {
+            var categories = context.Categories.Select(c => c.category).ToList();
+            return Ok(categories);
+        }
+
+        [Route("category/{search}")]
+        [HttpGet]
+        public IActionResult category([FromRoute] string search) 
+        {
+            var products = context.Products.Where(p => 
+            p.category.Contains(search) || p.title.Contains(search))
+                .ToList().Take(5);
+            var response = new { products = products };
+            return Ok(response);
+
         }
     }
 }

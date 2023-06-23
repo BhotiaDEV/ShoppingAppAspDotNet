@@ -10,6 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+        });
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -17,11 +26,18 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(key: "JwtConfig"));
 
+// for Entity framework
 builder.Services.AddDbContext<UserDbcontext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("UsersDb"));
-}); 
+});
 
+// for identity 
+builder.Services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<UserDbcontext>()
+    .AddDefaultTokenProviders();
+
+// For JWT authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -45,8 +61,7 @@ builder.Services.AddAuthentication(options =>
 
     });
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<UserDbcontext>();
+
 
 var app = builder.Build();
 
@@ -61,6 +76,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors();
 
 app.MapControllers();
 
